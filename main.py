@@ -53,10 +53,11 @@ def main_menu():
         WINDOW.blit(main_menu_bg, (0, 0))
 
         mx, my = pygame.mouse.get_pos()
-                                                                                # print(mx, my) USE THIS TO FIND BUTTON LOCATIONS WITHIN GAME
-        button_1 = pygame.Rect(50, 100, 200, 50)
-        button_2 = pygame.Rect(50, 200, 200, 50)
-        button_3 = pygame.Rect(50, 300, 200, 50)
+        # print(mx, my)
+        button_1 = pygame.Rect(538, 272, 268, 97)
+        button_2 = pygame.Rect(537, 408, 268, 97)
+        button_3 = pygame.Rect(538, 545, 268, 97)
+        button_4 = pygame.Rect(1214, 10, 51, 44)
         if button_1.collidepoint((mx, my)):
             if click:
                 pass
@@ -66,9 +67,13 @@ def main_menu():
         if button_3.collidepoint((mx, my)):
             if click:
                 pass
+        if button_4.collidepoint((mx, my)):
+            if click:
+                pass
         pygame.draw.rect(WINDOW, (255, 0, 0), button_1)
         pygame.draw.rect(WINDOW, (255, 0, 0), button_2)
         pygame.draw.rect(WINDOW, (255, 0, 0), button_3)
+        pygame.draw.rect(WINDOW, (255, 0, 0), button_4)
 
         click = False
         for event in pygame.event.get():
