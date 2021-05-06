@@ -7,6 +7,7 @@ pygame.init()
 # Constants
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
+DIFFICULTY = "easy"
 
 # Clock ticking for FPS (60fps)
 clock = pygame.time.Clock()
@@ -53,26 +54,32 @@ def main_menu():
 
         # position of the mouse
         mx, my = pygame.mouse.get_pos()
+
+        # used to find position of mouse, helps define rectangle parameters
         # print(mx, my)
 
         # invisible rectangles for the buttons
-        button_1 = pygame.Rect(538, 272, 268, 97)
-        button_2 = pygame.Rect(537, 408, 268, 97)
-        button_3 = pygame.Rect(538, 545, 268, 97)
-        button_4 = pygame.Rect(1214, 10, 51, 44)
-        if button_1.collidepoint((mx, my)):
+        play_button = pygame.Rect(538, 272, 268, 97)
+        level_select_button = pygame.Rect(537, 408, 268, 97)
+        quit_button = pygame.Rect(538, 545, 268, 97)
+        settings_button = pygame.Rect(1214, 10, 51, 44)
+
+        # button functions
+        if play_button.collidepoint((mx, my)):
             if click:
                 play_screen()
-        if button_2.collidepoint((mx, my)):
+        if level_select_button.collidepoint((mx, my)):
             if click:
                 level_select()
-        if button_3.collidepoint((mx, my)):
+        if quit_button.collidepoint((mx, my)):
             if click:
                 pygame.quit()
                 sys.exit()
-        if button_4.collidepoint((mx, my)):
+        if settings_button.collidepoint((mx, my)):
             if click:
                 settings()
+
+        # used to draw rectangles to see their position
         # pygame.draw.rect(WINDOW, (255, 0, 0), button_1)
         # pygame.draw.rect(WINDOW, (255, 0, 0), button_2)
         # pygame.draw.rect(WINDOW, (255, 0, 0), button_3)
@@ -105,8 +112,13 @@ def play_screen():
         WINDOW.blit(play_screen_bg, (0, 0))
 
         mx, my = pygame.mouse.get_pos()
-        # print(mx, my)
+        print(mx, my)
 
+        # invisible buttons
+        new_game_button = pygame.Rect(292, 354, 269, 98)
+        continue_button = pygame.Rect(719, 354, 269, 98)
+
+        click = False
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -117,6 +129,10 @@ def play_screen():
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
+
+        # used to draw rectangles to see their position
+        # pygame.draw.rect(WINDOW, (255, 0, 0), new_game_button)
+        # pygame.draw.rect(WINDOW, (255, 0, 0), continue_button)
 
         pygame.display.update()
         clock.tick(60)
@@ -134,6 +150,7 @@ def settings():
         mx, my = pygame.mouse.get_pos()
         # print(mx, my)
 
+        click = False
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -161,6 +178,7 @@ def level_select():
         mx, my = pygame.mouse.get_pos()
         # print(mx, my)
 
+        click = False
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
