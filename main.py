@@ -8,6 +8,8 @@ pygame.init()
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
+# Clock ticking for FPS (60fps)
+clock = pygame.time.Clock()
 
 # Creating the window of the game
 WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -40,40 +42,41 @@ level_select_bg = pygame.transform.scale(level_select_bg_img, (1280, 720))
 settinngs_bg_img = pygame.image.load(os.path.join("Assets/Screens", "settings screen.png"))
 settings_bg = pygame.transform.scale(settinngs_bg_img, (1280, 720))
 
-# Clock ticking for FPS (60fps)
-clock = pygame.time.Clock()
-
-click = False
-
-# Main menu
+# main menu
 def main_menu():
+    click = False
     while True:
 
+        # creating the background image
         WINDOW.fill((0, 0, 0))
         WINDOW.blit(main_menu_bg, (0, 0))
 
+        # position of the mouse
         mx, my = pygame.mouse.get_pos()
         # print(mx, my)
+
+        # invisible rectangles for the buttons
         button_1 = pygame.Rect(538, 272, 268, 97)
         button_2 = pygame.Rect(537, 408, 268, 97)
         button_3 = pygame.Rect(538, 545, 268, 97)
         button_4 = pygame.Rect(1214, 10, 51, 44)
         if button_1.collidepoint((mx, my)):
             if click:
-                pass
+                play_screen()
         if button_2.collidepoint((mx, my)):
             if click:
-                pass
+                level_select()
         if button_3.collidepoint((mx, my)):
             if click:
-                pass
+                pygame.quit()
+                sys.exit()
         if button_4.collidepoint((mx, my)):
             if click:
-                pass
-        pygame.draw.rect(WINDOW, (255, 0, 0), button_1)
-        pygame.draw.rect(WINDOW, (255, 0, 0), button_2)
-        pygame.draw.rect(WINDOW, (255, 0, 0), button_3)
-        pygame.draw.rect(WINDOW, (255, 0, 0), button_4)
+                settings()
+        # pygame.draw.rect(WINDOW, (255, 0, 0), button_1)
+        # pygame.draw.rect(WINDOW, (255, 0, 0), button_2)
+        # pygame.draw.rect(WINDOW, (255, 0, 0), button_3)
+        # pygame.draw.rect(WINDOW, (255, 0, 0), button_4)
 
         click = False
         for event in pygame.event.get():
@@ -92,7 +95,89 @@ def main_menu():
         clock.tick(60)
 
 
-# Game event Loop
+# play screen
+def play_screen():
+    click = False
+    run = True
+    while run:
+
+        WINDOW.fill((0, 0, 0))
+        WINDOW.blit(play_screen_bg, (0, 0))
+
+        mx, my = pygame.mouse.get_pos()
+        # print(mx, my)
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    run = False
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+
+        pygame.display.update()
+        clock.tick(60)
+
+
+# settings screen
+def settings():
+    click = False
+    run = True
+    while run:
+
+        WINDOW.fill((0, 0, 0))
+        WINDOW.blit(settings_bg, (0, 0))
+
+        mx, my = pygame.mouse.get_pos()
+        # print(mx, my)
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    run = False
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+
+        pygame.display.update()
+        clock.tick(60)
+
+
+# level select screen
+def level_select():
+    click = False
+    run = True
+    while run:
+
+        WINDOW.fill((0, 0, 0))
+        WINDOW.blit(level_select_bg, (0, 0))
+
+        mx, my = pygame.mouse.get_pos()
+        # print(mx, my)
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    run = False
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+
+        pygame.display.update()
+        clock.tick(60)
+
+
+# 
+# game event Loop
 def game():
     run = True
     while run:
