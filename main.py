@@ -8,6 +8,7 @@ pygame.init()
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 DIFFICULTY = "easy"
+last_level = 1
 
 # Clock ticking for FPS (60fps)
 clock = pygame.time.Clock()
@@ -117,6 +118,14 @@ def play_screen():
         # invisible buttons
         new_game_button = pygame.Rect(292, 354, 269, 98)
         continue_button = pygame.Rect(719, 354, 269, 98)
+
+        # button functions
+        if new_game_button.collidepoint((mx, my)):
+            if click:
+                game(1)
+        if continue_button.collidepoint((mx, my)):
+            if click:
+                game(last_level)
 
         click = False
         for event in pygame.event.get():
