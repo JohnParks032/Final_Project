@@ -86,6 +86,7 @@ def main_menu():
         # pygame.draw.rect(WINDOW, (255, 0, 0), button_3)
         # pygame.draw.rect(WINDOW, (255, 0, 0), button_4)
 
+        # check for clicks or button push
         click = False
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -131,6 +132,7 @@ def play_screen():
             if click:
                 run = False
 
+        # check for clicks or button push
         click = False
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -188,6 +190,7 @@ def settings():
             if click:
                 run = False
 
+        # check for clicks or button push
         click = False
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -223,13 +226,38 @@ def level_select():
         # print(mx, my)
 
         # invisible buttons
-        lvl_in_iesb_button = 1
-        lvl_out_iesb_button = 2
-        lvl_clock_button = 3
-        lvl_lotm_button = 4
-        lvl_wyly_button = 5
-        lvl_joe_button = 6
+        lvl_iesb_button = pygame.Rect(211, 296, 270, 99)
+        lvl_bogard_button = pygame.Rect(534, 296, 270, 99)
+        lvl_clock_button = pygame.Rect(875, 296, 270, 99)
+        lvl_lotm_button = pygame.Rect(211, 490, 270, 99)
+        lvl_wyly_button = pygame.Rect(534, 490, 270, 99)
+        lvl_endless_button = pygame.Rect(875, 490, 270, 99)
+        back_button = pygame.Rect(4, 5, 33, 34)
 
+        # button functions
+        if lvl_iesb_button.collidepoint((mx, my)):
+            if click:
+                game(1)
+        if lvl_bogard_button.collidepoint((mx, my)):
+            if click:
+                game(2)
+        if lvl_clock_button.collidepoint((mx, my)):
+            if click:
+                game(3)
+        if lvl_lotm_button.collidepoint((mx, my)):
+            if click:
+                game(4)
+        if lvl_wyly_button.collidepoint((mx, my)):
+            if click:
+                game(5)
+        if lvl_endless_button.collidepoint((mx, my)):
+            if click:
+                game(6)
+        if back_button.collidepoint((mx, my)):
+            if click:
+                run = False
+
+        # check for clicks or button push
         click = False
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -242,12 +270,21 @@ def level_select():
                 if event.button == 1:
                     click = True
 
+        # draw rects
+        # pygame.draw.rect(WINDOW, (255, 0, 0), lvl_iesb_button)
+        # pygame.draw.rect(WINDOW, (255, 0, 0), lvl_bogard_button)
+        # pygame.draw.rect(WINDOW, (255, 0, 0), lvl_clock_button)
+        # pygame.draw.rect(WINDOW, (255, 0, 0), lvl_lotm_button)
+        # pygame.draw.rect(WINDOW, (255, 0, 0), lvl_wyly_button)
+        # pygame.draw.rect(WINDOW, (255, 0, 0), lvl_endless_button)
+        # pygame.draw.rect(WINDOW, (255, 0, 0), back_button)
+
         pygame.display.update()
         clock.tick(60)
 
 
 # game event Loop
-def game():
+def game(level):
     run = True
     while run:
         clock.tick(60)
@@ -261,4 +298,6 @@ main_menu()
 """ I started to work on some of the code for techie and what not, but I think im going to try and create a main menu first -John
 
     Okay, I did some research and it seems that putting each menu screen and the game itself into their own functions might be the way to go. 
-        Working on them right now. -John"""
+        Working on them right now. -John
+        
+    The menus are now finished!! -John"""
