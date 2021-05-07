@@ -8,7 +8,7 @@ pygame.init()
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 DIFFICULTY = "easy"
-last_level = "iesb"
+last_level = 1
 
 # Clock ticking for FPS (60fps)
 clock = pygame.time.Clock()
@@ -28,7 +28,6 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
 
-# old code just incase for bg pygame.image.load(os.path.join("Assets/Backgrounds", "Inside_IESB.jpg")).convert()
 
 # Backgrounds
 main_menu_bg_img = pygame.image.load(os.path.join("Assets/Screens", "main menu.png"))
@@ -43,15 +42,11 @@ level_select_bg = pygame.transform.scale(level_select_bg_img, (1280, 720))
 settinngs_bg_img = pygame.image.load(os.path.join("Assets/Screens", "settings screen.png"))
 settings_bg = pygame.transform.scale(settinngs_bg_img, (1280, 720))
 
+
 # level dictionary
-# the list contains path for [background, foreground, obstacles, flying obstacles]
 lvls_dict = {
-    "iesb": ["Outside_IESB.png", "Road.PNG"],
-    "bogard": ["Inside_IESB.png", "Road.PNG"],
-    "clock": ["Clock_Tower.png", "Brick.PNG"],
-    "lotm": ["Lady_of_Mist.png", "Brick.PNG"],
-    "wyly": ["Wyly.png", "Brick.PNG"],
-    "endless": ["The_Joe.png", "Grass.PNG"]
+    "iesb": ["Outside_IESB.png"]
+
 }
 
 # main menu
@@ -250,7 +245,7 @@ def level_select():
                 game("iesb")
         if lvl_bogard_button.collidepoint((mx, my)):
             if click:
-                game("bogard")
+                game("boagrd")
         if lvl_clock_button.collidepoint((mx, my)):
             if click:
                 game("clock")
@@ -301,7 +296,6 @@ def game(level_key):
     bg = pygame.transform.scale(bg_img, (1280, 720))
 
     # foreground
-    
 
     WINDOW.fill((0, 0, 0))
     WINDOW.blit(bg, (0, 0))
@@ -313,7 +307,6 @@ def game(level_key):
             if event.type == QUIT:
                 run = False
         pygame.display.flip()
-
 
 main_menu()
 
