@@ -295,25 +295,37 @@ def level_select():
 
 # game event Loop
 def game(level_key):
-
-    # background
-    bg_img = pygame.image.load(os.path.join("Assets/Backgrounds", lvls_dict[level_key][0]))
-    bg = pygame.transform.scale(bg_img, (1280, 720))
-
-    # foreground
-    
-
-    WINDOW.fill((0, 0, 0))
-    WINDOW.blit(bg, (0, 0))
-
+    # i is used to move the screen
+    i = 0
     run = True
     while run:
+        
+        # background
+        bg_img = pygame.image.load(os.path.join("Assets/Backgrounds", lvls_dict[level_key][0]))
+        bg = pygame.transform.scale(bg_img, (1280, 720))
+
+        # foreground
+        fg_img = pygame.image.load(os.path.join("Assets/Foreground", lvls_dict[level_key][1]))
+        fg = pygame.transform.scale(fg_img, (1280, 570))
+
+        # drawing the bg & fg
+        WINDOW.fill((0, 0, 0))
+        WINDOW.blit(bg, (i, 0))
+        WINDOW.blit(fg, (0, 150))
+
+        # moving the bg
+        i -= 1
+
         clock.tick(60)
         for event in pygame.event.get():
             if event.type == QUIT:
-                run = False
-        pygame.display.flip()
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    run = False
 
+        pygame.display.update()
 
 main_menu()
 
