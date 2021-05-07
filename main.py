@@ -113,11 +113,12 @@ def play_screen():
         WINDOW.blit(play_screen_bg, (0, 0))
 
         mx, my = pygame.mouse.get_pos()
-        print(mx, my)
+        # print(mx, my)
 
         # invisible buttons
         new_game_button = pygame.Rect(292, 354, 269, 98)
         continue_button = pygame.Rect(719, 354, 269, 98)
+        back_button = pygame.Rect(9, 6, 33, 34)
 
         # button functions
         if new_game_button.collidepoint((mx, my)):
@@ -126,6 +127,9 @@ def play_screen():
         if continue_button.collidepoint((mx, my)):
             if click:
                 game(last_level)
+        if back_button.collidepoint((mx, my)):
+            if click:
+                run = False
 
         click = False
         for event in pygame.event.get():
@@ -142,6 +146,7 @@ def play_screen():
         # used to draw rectangles to see their position
         # pygame.draw.rect(WINDOW, (255, 0, 0), new_game_button)
         # pygame.draw.rect(WINDOW, (255, 0, 0), continue_button)
+        # pygame.draw.rect(WINDOW, (0, 255, 0), back_button)
 
         pygame.display.update()
         clock.tick(60)
@@ -149,6 +154,7 @@ def play_screen():
 
 # settings screen
 def settings():
+    global DIFFICULTY
     click = False
     run = True
     while run:
@@ -156,8 +162,31 @@ def settings():
         WINDOW.fill((0, 0, 0))
         WINDOW.blit(settings_bg, (0, 0))
 
-        mx, my = pygame.mouse.get_pos()
+        mx, my = pygame.mouse.get_pos(292, 354, 269, 98)
         # print(mx, my)
+
+        # invisible buttons
+        easy_button = pygame.Rect(520, 232, 270, 99)
+        medium_button = pygame.Rect(520, 376, 270, 99)
+        hard_button = pygame.Rect(520, 518, 270, 99)
+        back_button = pygame.Rect(11, 8, 33, 34)
+
+        # button functions
+        if easy_button.collidepoint((mx, my)):
+            if click:
+                DIFFICULTY = "easy"
+                run = False
+        if medium_button.collidepoint((mx, my)):
+            if click:
+                DIFFICULTY = "medium"
+                run = False
+        if hard_button.collidepoint((mx, my)):
+            if click:
+                DIFFICULTY = "hard"
+                run = False
+        if back_button.collidepoint((mx, my)):
+            if click:
+                run = False
 
         click = False
         for event in pygame.event.get():
@@ -170,6 +199,12 @@ def settings():
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
+
+        # draw rects
+        # pygame.draw.rect(WINDOW, (255, 0, 0), easy_button)
+        # pygame.draw.rect(WINDOW, (255, 0, 0), medium_button)
+        # pygame.draw.rect(WINDOW, (255, 0, 0), hard_button)
+        # pygame.draw.rect(WINDOW, (0, 255, 0), back_button)
 
         pygame.display.update()
         clock.tick(60)
@@ -203,7 +238,6 @@ def level_select():
         clock.tick(60)
 
 
-# 
 # game event Loop
 def game():
     run = True
