@@ -60,7 +60,6 @@ def main_menu():
     while True:
 
         # creating the background image
-        WINDOW.fill((0, 0, 0))
         WINDOW.blit(main_menu_bg, (0, 0))
 
         # position of the mouse
@@ -120,7 +119,6 @@ def play_screen():
     run = True
     while run:
 
-        WINDOW.fill((0, 0, 0))
         WINDOW.blit(play_screen_bg, (0, 0))
 
         mx, my = pygame.mouse.get_pos()
@@ -171,7 +169,6 @@ def settings():
     run = True
     while run:
 
-        WINDOW.fill((0, 0, 0))
         WINDOW.blit(settings_bg, (0, 0))
 
         mx, my = pygame.mouse.get_pos(292, 354, 269, 98)
@@ -229,7 +226,6 @@ def level_select():
     run = True
     while run:
 
-        WINDOW.fill((0, 0, 0))
         WINDOW.blit(level_select_bg, (0, 0))
 
         mx, my = pygame.mouse.get_pos()
@@ -308,13 +304,23 @@ def game(level_key):
         fg_img = pygame.image.load(os.path.join("Assets/Foreground", lvls_dict[level_key][1]))
         fg = pygame.transform.scale(fg_img, (1280, 570))
 
-        # drawing the bg & fg
+        # drawing the bg
         WINDOW.fill((0, 0, 0))
         WINDOW.blit(bg, (i, 0))
-        WINDOW.blit(fg, (0, 150))
+        WINDOW.blit(bg, (WINDOW_WIDTH + i, 0))
 
-        # moving the bg
-        i -= 1
+        #drawing the fg
+        WINDOW.blit(fg, (0, 150))
+        WINDOW.blit(fg, (i, 150))
+        WINDOW.blit(fg, (WINDOW_WIDTH + i, 150))
+
+        # moving the bg & fg
+        if i == -WINDOW_WIDTH:
+            WINDOW.blit(bg, (WINDOW_WIDTH + i, 0))
+            WINDOW.blit(fg, (WINDOW_WIDTH + i, 150))
+            i = 0
+
+        i -= 10
 
         clock.tick(60)
         for event in pygame.event.get():
