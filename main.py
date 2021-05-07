@@ -222,6 +222,14 @@ def level_select():
         mx, my = pygame.mouse.get_pos()
         # print(mx, my)
 
+        # invisible buttons
+        lvl_in_iesb_button = 1
+        lvl_out_iesb_button = 2
+        lvl_clock_button = 3
+        lvl_lotm_button = 4
+        lvl_wyly_button = 5
+        lvl_joe_button = 6
+
         click = False
         for event in pygame.event.get():
             if event.type == QUIT:
