@@ -106,7 +106,7 @@ class Player:
     def jump(self):
         self.image = self.jump_png
         if self.isJump:
-            self.player_rect.y -= self.dynamic_jump_vel * 4
+            self.player_rect.y -= self.dynamic_jump_vel * 6
             self.dynamic_jump_vel -= 0.8
         if self.dynamic_jump_vel < - self.static_jump_vel:
             self.isJump = False
@@ -143,42 +143,55 @@ class Arduino(Obstacle):
     def __init__(self, image):
         self.type = randint(0, 1)
         super().__init__(image, self.type)
-        self.rect.y = 325
+        self.rect.y = 500
 
 
 class Sign(Obstacle):
     def __init__(self, image):
         self.type = randint(0, 1)
         super().__init__(image, self.type)
-        self.rect.y = 325
+        self.rect.y = 355
 
 
 class Books(Obstacle):
     def __init__(self, image):
         self.type = randint(0, 1)
         super().__init__(image, self.type)
-        self.rect.y = 325
+        self.rect.y = 450
 
 
 class PicnicTable(Obstacle):
     def __init__(self, image):
         self.type = randint(0, 1)
         super().__init__(image, self.type)
-        self.rect.y = 325
+        self.rect.y = 500
 
 
-class Football(Obstacle):
+class FootballGround(Obstacle):
     def __init__(self, image):
         self.type = randint(0, 1)
         super().__init__(image, self.type)
-        self.rect.y = 325
+        self.rect.y = 500
+
+
+class FootballAir(Obstacle):
+    def __init__(self, image):
+        self.type = 0
+        super().__init__(image, self.type)
+        self.rect.y = 350
+        self.index = 0
+    
+    def draw(self, WINDOW):
+        if self.index >= 9:
+            self.index = 0
+        WINDOW.blit(self.image[self.index//5], self.rect)
 
 
 class Bird(Obstacle):
     def __init__(self, image):
         self.type = 0
         super().__init__(image, self.type)
-        self.rect.y = 250
+        self.rect.y = 350
         self.index = 0
     
     def draw(self, WINDOW):
@@ -208,8 +221,7 @@ lvls_dict = {
     "clock": ["Clock_Tower.png", "Brick.PNG", pn_table_png],
     "lotm": ["Lady_of_Mist.png", "Brick.PNG", pn_table_png],
     "wyly": ["Wyly.png", "Brick.PNG", books_png],
-    "endless": ["The_Joe.png", "Grass.PNG", football_ground_png]
-}
+    "endless": ["The_Joe.png", "Grass.PNG", football_ground_png]}
 
 # main menu
 def main_menu():
@@ -514,7 +526,7 @@ def game(level_key):
                 sys.exit()
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    settings()
+                    run = False
         
         # increment score
         score()
@@ -546,17 +558,25 @@ def game(level_key):
                     obstacles.append(Bird(bird_png))
             elif level_key == "endless":
                 if randint(0, 1) == 0:
-                    obstacles.append(Football(lvls_dict[level_key][2]))
+                    obstacles.append(FootballGround(lvls_dict[level_key][2]))
                 else:
-                    obstacles.append(Bird(football_air_png))
+                    obstacles.append(FootballAir(football_air_png))
 
         # drawing obstacle and hit detection
         for obstacle in obstacles:
             obstacle.draw(WINDOW)
             obstacle.update()
             if techie.player_rect.colliderect(obstacle.rect):
+                # used to show hitbox
                 pygame.draw.rect(WINDOW, (255, 0, 0), techie.player_rect, 2)
+                pygame.time.delay(2000)
+                obstacles.pop()
+                run = False
 
         pygame.display.update()
 
 main_menu()
+
+"""Idea for end level implementation. Maybe have an if condition with the points??? Ill try to figure out a better way later -John"""
+"""Need to add a start_event and end_event for the levels"""
+"""Need to figure out how to "continue" """
