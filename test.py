@@ -23,20 +23,14 @@ techie_run = [pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 
 techie_jump = pygame.image.load(os.path.join("Assets/Techie", "Techie Jump.png"))
 techie_duck = pygame.image.load(os.path.join("Assets/Techie", "Techie Duck.png"))
 
-# Techie Default Parameters
-techie_width = 762
-techie_height= 782
-techie_x_pos = 200
-techie_y_pos = 151
-
 # Class for Techie, playable character
 class Player:
-    def __init__(self, width, height, x_pos, y_pos):
-        self.width = width
-        self.height = height
-        self.x_pos = x_pos
-        self.y_pos = y_pos
+    x_pos = 100
+    y_pos = 390
+    y_pos_duck = 470
+    static_jump_vel = 8.5
 
+    def __init__(self):
         self.run_png = techie_run
         self.jump_png = techie_jump
         self.duck_png = techie_duck
@@ -46,8 +40,11 @@ class Player:
         self.isDuck = False
 
         self.step_index = 0
+        self.dynamic_jump_vel = self.static_jump_vel
         self.image = self.run_png[0]
         self.player_rect = self.image.get_rect()
+        self.player_rect.x = self.x_pos
+        self.player_rect.y = self.y_pos
 
     def update(self, user_input):
         if self.isRun:
@@ -81,13 +78,23 @@ class Player:
         self.step_index += 1
     
     def jump(self):
-        pass
+        self.image = self.jump_png
+        if self.isJump:
+            self.player_rect.y -= self.dynamic_jump_vel * 4
+            self.dynamic_jump_vel -= 0.8
+        if self.dynamic_jump_vel < - self.static_jump_vel:
+            self.isJump = False
+            self.dynamic_jump_vel = self.static_jump_vel
         
     def duck(self):
-        pass
+        self.image = self.duck_png
+        self.player_rect = self.image.get_rect()
+        self.player_rect.x = self.x_pos
+        self.player_rect.y = self.y_pos_duck
+        self.step_index += 1
 
     def draw(self, WINDOW):
-        WINDOW.blit(self.image, (self.width, self.height, self.x_pos, self.y_pos))
+        WINDOW.blit(self.image, (self.player_rect.x, self.player_rect.y))
 
 
 
@@ -354,7 +361,7 @@ def level_select():
 def game(level_key):
     
     # creating the player
-    techie = Player(techie_width, techie_height, techie_x_pos, techie_y_pos)
+    techie = Player()
 
     # i is used to move the screen
     i = 0
@@ -385,7 +392,7 @@ def game(level_key):
             WINDOW.blit(fg, (WINDOW_WIDTH + i, 150))
             i = 0
 
-        i -= 15
+        i -= 20
 
         clock.tick(60)
         for event in pygame.event.get():
