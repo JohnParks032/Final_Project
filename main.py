@@ -2,33 +2,203 @@
 import pygame
 import os, sys
 from pygame.locals import *     # Further explanation can be found at: https://www.pygame.org/docs/ref/locals.html#module-pygame.locals
+from random import randint
 pygame.init()
+
 
 # Constants
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 DIFFICULTY = "easy"
 last_level = "iesb"
+game_speed = 30
+i = 30
+points = 0
+obstacles = []
 
 # Clock ticking for FPS (60fps)
 clock = pygame.time.Clock()
+
 
 # Creating the window of the game
 WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("TechTime Racers") # Window name
 
 
-# Class for Techie, playable character
-class Player(pygame.sprite.Sprite):
-    run = [pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 1.png")), 
+# Techie "Animations"
+techie_run = [pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 1.png")), 
             pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 2.png"))]
-    jump = pygame.image.load(os.path.join("Assets/Techie", "Techie Jump.png"))
-    duck = pygame.image.load(os.path.join("Assets/Techie", "Techie Duck.png"))
-    def __init__(self, width, height, x_pos, y_pos):
-        pygame.sprite.Sprite.__init__(self)
-        self.rect = self.image.get_rect()
+techie_jump = pygame.image.load(os.path.join("Assets/Techie", "Techie Jump.png"))
+techie_duck = pygame.image.load(os.path.join("Assets/Techie", "Techie Duck.png"))
 
-# old code just incase for bg pygame.image.load(os.path.join("Assets/Backgrounds", "Inside_IESB.jpg")).convert()
+
+# obstacles
+arduino_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Arduino 1.PNG")),
+            pygame.image.load(os.path.join("Assets/Obstacles", "Arduino 2.PNG"))]
+sign_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Stop Sign.PNG")),
+            pygame.image.load(os.path.join("Assets/Obstacles", "Yield Sign.PNG"))]
+pn_table_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Picnic Table 1.PNG")),
+            pygame.image.load(os.path.join("Assets/Obstacles", "Picnic Table 2.PNG"))]
+bird_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Bird Fly 1.PNG")),
+            pygame.image.load(os.path.join("Assets/Obstacles", "Bird Fly 2.PNG"))]
+books_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Book 1.PNG")),
+            pygame.image.load(os.path.join("Assets/Obstacles", "Book 2.PNG"))]
+football_ground_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Football Ground.PNG")),
+                    pygame.image.load(os.path.join("Assets/Obstacles", "Football Ground.PNG"))]
+football_air_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Football Air.PNG")), 
+                pygame.image.load(os.path.join("Assets/Obstacles", "Football Air.PNG"))]
+
+
+# Class for Techie, playable character
+class Player:
+    x_pos = 100
+    y_pos = 390
+    y_pos_duck = 470
+    static_jump_vel = 8.5
+
+    def __init__(self):
+        self.run_png = techie_run
+        self.jump_png = techie_jump
+        self.duck_png = techie_duck
+
+        self.isRun = True
+        self.isJump = False
+        self.isDuck = False
+
+        self.step_index = 0
+        self.dynamic_jump_vel = self.static_jump_vel
+        self.image = self.run_png[0]
+        self.player_rect = self.image.get_rect()
+        self.player_rect.x = self.x_pos
+        self.player_rect.y = self.y_pos
+
+    def update(self, user_input):
+        if self.isRun:
+            self.run()
+        if self.isJump:
+            self.jump()
+        if self.isDuck:
+            self.duck()
+
+        if self.step_index >= 10:
+            self.step_index = 0
+        
+        if user_input[pygame.K_UP] and not self.isJump:
+            self.isRun = False
+            self.isJump = True
+            self.isDuck = False
+        elif user_input[pygame.K_DOWN] and not self.isJump:
+            self.isRun = False
+            self.isJump = False
+            self.isDuck = True
+        elif not (self.isJump or user_input[pygame.K_DOWN]):
+            self.isRun = True
+            self.isJump = False
+            self.isDuck = False
+
+    def run(self):
+        self.image = self.run_png[self.step_index // 5]
+        self.player_rect = self.image.get_rect()
+        self.player_rect.x = self.x_pos
+        self.player_rect.y = self.y_pos
+        self.step_index += 1
+    
+    def jump(self):
+        self.image = self.jump_png
+        if self.isJump:
+            self.player_rect.y -= self.dynamic_jump_vel * 6
+            self.dynamic_jump_vel -= 0.8
+        if self.dynamic_jump_vel < - self.static_jump_vel:
+            self.isJump = False
+            self.dynamic_jump_vel = self.static_jump_vel
+        
+    def duck(self):
+        self.image = self.duck_png
+        self.player_rect = self.image.get_rect()
+        self.player_rect.x = self.x_pos
+        self.player_rect.y = self.y_pos_duck
+        self.step_index += 1
+
+    def draw(self, WINDOW):
+        WINDOW.blit(self.image, (self.player_rect.x, self.player_rect.y))
+
+
+class Obstacle:
+    def __init__(self, image, type):
+        self.image = image
+        self.type = type
+        self.rect = self.image[self.type].get_rect()
+        self.rect.x = WINDOW_WIDTH
+
+    def update(self):
+        self.rect.x -= game_speed
+        if self.rect.x < -self.rect.width:
+            obstacles.pop()
+    
+    def draw(self, WINDOW):
+        WINDOW.blit(self.image[self.type], self.rect)
+
+
+class Arduino(Obstacle):
+    def __init__(self, image):
+        self.type = randint(0, 1)
+        super().__init__(image, self.type)
+        self.rect.y = 500
+
+
+class Sign(Obstacle):
+    def __init__(self, image):
+        self.type = randint(0, 1)
+        super().__init__(image, self.type)
+        self.rect.y = 355
+
+
+class Books(Obstacle):
+    def __init__(self, image):
+        self.type = randint(0, 1)
+        super().__init__(image, self.type)
+        self.rect.y = 450
+
+
+class PicnicTable(Obstacle):
+    def __init__(self, image):
+        self.type = randint(0, 1)
+        super().__init__(image, self.type)
+        self.rect.y = 500
+
+
+class FootballGround(Obstacle):
+    def __init__(self, image):
+        self.type = randint(0, 1)
+        super().__init__(image, self.type)
+        self.rect.y = 500
+
+
+class FootballAir(Obstacle):
+    def __init__(self, image):
+        self.type = 0
+        super().__init__(image, self.type)
+        self.rect.y = 350
+        self.index = 0
+    
+    def draw(self, WINDOW):
+        if self.index >= 9:
+            self.index = 0
+        WINDOW.blit(self.image[self.index//5], self.rect)
+
+
+class Bird(Obstacle):
+    def __init__(self, image):
+        self.type = 0
+        super().__init__(image, self.type)
+        self.rect.y = 350
+        self.index = 0
+    
+    def draw(self, WINDOW):
+        if self.index >= 9:
+            self.index = 0
+        WINDOW.blit(self.image[self.index//5], self.rect)
+
 
 # Backgrounds
 main_menu_bg_img = pygame.image.load(os.path.join("Assets/Screens", "main menu.png"))
@@ -44,15 +214,14 @@ settinngs_bg_img = pygame.image.load(os.path.join("Assets/Screens", "settings sc
 settings_bg = pygame.transform.scale(settinngs_bg_img, (1280, 720))
 
 # level dictionary
-# the list contains path for [background, foreground, obstacles, flying obstacles]
+# the list contains path for [background, foreground, obstacles]
 lvls_dict = {
-    "iesb": ["Outside_IESB.png", "Road.PNG"],
-    "bogard": ["Inside_IESB.png", "Road.PNG"],
-    "clock": ["Clock_Tower.png", "Brick.PNG"],
-    "lotm": ["Lady_of_Mist.png", "Brick.PNG"],
-    "wyly": ["Wyly.png", "Brick.PNG"],
-    "endless": ["The_Joe.png", "Grass.PNG"]
-}
+    "iesb": ["Outside_IESB.png", "Road.PNG", arduino_png],
+    "bogard": ["Bogard.png", "Road.PNG", sign_png],
+    "clock": ["Clock_Tower.png", "Brick.PNG", pn_table_png],
+    "lotm": ["Lady_of_Mist.png", "Brick.PNG", pn_table_png],
+    "wyly": ["Wyly.png", "Brick.PNG", books_png],
+    "endless": ["The_Joe.png", "Grass.PNG", football_ground_png]}
 
 # main menu
 def main_menu():
@@ -164,6 +333,7 @@ def play_screen():
 
 # settings screen
 def settings():
+    global i, game_speed
     global DIFFICULTY
     click = False
     run = True
@@ -184,14 +354,20 @@ def settings():
         if easy_button.collidepoint((mx, my)):
             if click:
                 DIFFICULTY = "easy"
+                i = 30
+                game_speed = 30
                 run = False
         if medium_button.collidepoint((mx, my)):
             if click:
                 DIFFICULTY = "medium"
+                i = 60
+                game_speed = 60
                 run = False
         if hard_button.collidepoint((mx, my)):
             if click:
                 DIFFICULTY = "hard"
+                i = 90
+                game_speed = 90
                 run = False
         if back_button.collidepoint((mx, my)):
             if click:
@@ -288,11 +464,29 @@ def level_select():
         pygame.display.update()
         clock.tick(60)
 
-
+    
 # game event Loop
 def game(level_key):
+    global points, obstacles, i, game_speed
+    
+    # creating the player
+    techie = Player()
+
     # i is used to move the screen
     i = 0
+
+    # used to keep score
+    points = 0
+    font = pygame.font.Font("freesansbold.ttf", 20)
+    def score():
+        global points
+        points += 1
+        point_display = font.render(f"Points: {points}", True, (0, 0, 0))
+        pd_rect = point_display.get_rect()
+        pd_rect.center = (1200, 30)
+        WINDOW.blit(point_display, pd_rect)
+
+
     run = True
     while run:
         
@@ -315,14 +509,17 @@ def game(level_key):
         WINDOW.blit(fg, (WINDOW_WIDTH + i, 150))
 
         # moving the bg & fg
-        if i == -WINDOW_WIDTH:
+        if i <= -WINDOW_WIDTH:
             WINDOW.blit(bg, (WINDOW_WIDTH + i, 0))
             WINDOW.blit(fg, (WINDOW_WIDTH + i, 150))
             i = 0
+        
+        # speed at which bg moves
+        i -= 30
 
-        i -= 10
-
+        # fps
         clock.tick(60)
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -330,14 +527,56 @@ def game(level_key):
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     run = False
+        
+        # increment score
+        score()
+
+        # grabbing input for Player class
+        user_input = pygame.key.get_pressed()
+
+        # drawing player
+        techie.draw(WINDOW)
+        techie.update(user_input)
+
+        # creating obstacles according to level
+        if len(obstacles) == 0:
+            if level_key == "iesb":
+                obstacles.append(Arduino(lvls_dict[level_key][2]))
+            elif level_key == "bogard":
+                obstacles.append(Sign(lvls_dict[level_key][2]))
+            elif level_key == "clock":
+                obstacles.append(PicnicTable(lvls_dict[level_key][2]))
+            elif level_key == "lotm":
+                if randint(0, 1) == 0:
+                    obstacles.append(PicnicTable(lvls_dict[level_key][2]))
+                else:
+                    obstacles.append(Bird(bird_png))
+            elif level_key == "wyly":
+                if randint(0, 1) == 0:
+                    obstacles.append(Books(lvls_dict[level_key][2]))
+                else:
+                    obstacles.append(Bird(bird_png))
+            elif level_key == "endless":
+                if randint(0, 1) == 0:
+                    obstacles.append(FootballGround(lvls_dict[level_key][2]))
+                else:
+                    obstacles.append(FootballAir(football_air_png))
+
+        # drawing obstacle and hit detection
+        for obstacle in obstacles:
+            obstacle.draw(WINDOW)
+            obstacle.update()
+            if techie.player_rect.colliderect(obstacle.rect):
+                # used to show hitbox
+                pygame.draw.rect(WINDOW, (255, 0, 0), techie.player_rect, 2)
+                pygame.time.delay(2000)
+                obstacles.pop()
+                run = False
 
         pygame.display.update()
 
 main_menu()
 
-""" I started to work on some of the code for techie and what not, but I think im going to try and create a main menu first -John
-
-    Okay, I did some research and it seems that putting each menu screen and the game itself into their own functions might be the way to go. 
-        Working on them right now. -John
-        
-    The menus are now finished!! -John"""
+"""Idea for end level implementation. Maybe have an if condition with the points??? Ill try to figure out a better way later -John"""
+"""Need to add a start_event and end_event for the levels"""
+"""Need to figure out how to "continue" """
