@@ -9,6 +9,8 @@ WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 DIFFICULTY = "easy"
 last_level = "iesb"
+partial_points = 0
+points = 0
 
 # Clock ticking for FPS (60fps)
 clock = pygame.time.Clock()
@@ -359,12 +361,26 @@ def level_select():
     
 # game event Loop
 def game(level_key):
+    global partial_points, points
     
     # creating the player
     techie = Player()
 
     # i is used to move the screen
     i = 0
+
+    # used to keep score
+    points = 0
+    font = pygame.font.Font("freesansbold.ttf", 20)
+    def score():
+        global partial_points, points
+        points += 1
+        point_display = font.render(f"Points: {points}", True, (0, 0, 0))
+        pd_rect = point_display.get_rect()
+        pd_rect.center = (1200, 30)
+        WINDOW.blit(point_display, pd_rect)
+
+
     run = True
     while run:
         
@@ -391,10 +407,13 @@ def game(level_key):
             WINDOW.blit(bg, (WINDOW_WIDTH + i, 0))
             WINDOW.blit(fg, (WINDOW_WIDTH + i, 150))
             i = 0
-
+        
+        # speed at which bg moves
         i -= 20
 
+        # fps
         clock.tick(60)
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -402,6 +421,9 @@ def game(level_key):
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     run = False
+        
+        # increment score
+        score()
 
         # grabbing input for Player class
         user_input = pygame.key.get_pressed()
@@ -412,10 +434,3 @@ def game(level_key):
         pygame.display.update()
 
 main_menu()
-
-""" I started to work on some of the code for techie and what not, but I think im going to try and create a main menu first -John
-
-    Okay, I did some research and it seems that putting each menu screen and the game itself into their own functions might be the way to go. 
-        Working on them right now. -John
-        
-    The menus are now finished!! -John"""
