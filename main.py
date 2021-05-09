@@ -39,6 +39,8 @@ sign_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Stop Sign.PNG"))
             pygame.image.load(os.path.join("Assets/Obstacles", "Yield Sign.PNG"))]
 pn_table_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Picnic Table 1.PNG")),
             pygame.image.load(os.path.join("Assets/Obstacles", "Picnic Table 2.PNG"))]
+squirrel_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Squirrel 1.PNG")),
+            pygame.image.load(os.path.join("Assets/Obstacles", "Squirrel 2.PNG"))]
 bird_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Bird Fly 1.PNG")),
             pygame.image.load(os.path.join("Assets/Obstacles", "Bird Fly 2.PNG"))]
 books_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Book 1.PNG")),
@@ -167,6 +169,13 @@ class PicnicTable(Obstacle):
         self.rect.y = 500
 
 
+class Squirrel(Obstacle):
+    def __init__(self, image):
+        self.type = randint(0, 1)
+        super().__init__(image, self.type)
+        self.rect.y = 480
+
+
 class FootballGround(Obstacle):
     def __init__(self, image):
         self.type = randint(0, 1)
@@ -219,7 +228,7 @@ lvls_dict = {
     "iesb": ["Outside_IESB.png", "Road.PNG", arduino_png],
     "bogard": ["Bogard.png", "Road.PNG", sign_png],
     "clock": ["Clock_Tower.png", "Brick.PNG", pn_table_png],
-    "lotm": ["Lady_of_Mist.png", "Brick.PNG", pn_table_png],
+    "lotm": ["Lady_of_Mist.png", "Brick.PNG", squirrel_png],
     "wyly": ["Wyly.png", "Brick.PNG", books_png],
     "endless": ["The_Joe.png", "Grass.PNG", football_ground_png]}
 
@@ -548,7 +557,7 @@ def game(level_key):
                 obstacles.append(PicnicTable(lvls_dict[level_key][2]))
             elif level_key == "lotm":
                 if randint(0, 1) == 0:
-                    obstacles.append(PicnicTable(lvls_dict[level_key][2]))
+                    obstacles.append(Squirrel(lvls_dict[level_key][2]))
                 else:
                     obstacles.append(Bird(bird_png))
             elif level_key == "wyly":
@@ -566,12 +575,14 @@ def game(level_key):
         for obstacle in obstacles:
             obstacle.draw(WINDOW)
             obstacle.update()
-            if techie.player_rect.colliderect(obstacle.rect):
+            pygame.draw.rect(WINDOW, (255, 0, 0), techie.player_rect, 2)
+            pygame.draw.rect(WINDOW, (255, 0, 0), obstacle.rect, 2)
+            # if techie.player_rect.colliderect(obstacle.rect):
                 # used to show hitbox
-                pygame.draw.rect(WINDOW, (255, 0, 0), techie.player_rect, 2)
-                pygame.time.delay(2000)
-                obstacles.pop()
-                run = False
+                # pygame.draw.rect(WINDOW, (255, 0, 0), techie.player_rect, 2)
+                # pygame.time.delay(2000)
+                # obstacles.pop()
+                # run = False
 
         pygame.display.update()
 
