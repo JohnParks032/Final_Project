@@ -47,7 +47,7 @@ settings_bg = pygame.transform.scale(settinngs_bg_img, (1280, 720))
 # the list contains path for [background, foreground, obstacles, flying obstacles]
 lvls_dict = {
     "iesb": ["Outside_IESB.png", "Road.PNG"],
-    "bogard": ["Inside_IESB.png", "Road.PNG"],
+    "bogard": ["Bogard.png", "Road.PNG"],
     "clock": ["Clock_Tower.png", "Brick.PNG"],
     "lotm": ["Lady_of_Mist.png", "Brick.PNG"],
     "wyly": ["Wyly.png", "Brick.PNG"],
