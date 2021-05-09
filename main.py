@@ -17,18 +17,21 @@ clock = pygame.time.Clock()
 WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("TechTime Racers") # Window name
 
+# Techie "Animations"
+techie_run = [pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 1.png")), 
+            pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 2.png"))]
+techie_jump = pygame.image.load(os.path.join("Assets/Techie", "Techie Jump.png"))
+techie_duck = pygame.image.load(os.path.join("Assets/Techie", "Techie Duck.png"))
 
 # Class for Techie, playable character
 class Player(pygame.sprite.Sprite):
-    run = [pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 1.png")), 
-            pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 2.png"))]
-    jump = pygame.image.load(os.path.join("Assets/Techie", "Techie Jump.png"))
-    duck = pygame.image.load(os.path.join("Assets/Techie", "Techie Duck.png"))
     def __init__(self, width, height, x_pos, y_pos):
         pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((50, 50))
+        self.image.fill((0, 255, 0))
         self.rect = self.image.get_rect()
+        self.rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
 
-# old code just incase for bg pygame.image.load(os.path.join("Assets/Backgrounds", "Inside_IESB.jpg")).convert()
 
 # Backgrounds
 main_menu_bg_img = pygame.image.load(os.path.join("Assets/Screens", "main menu.png"))
@@ -291,6 +294,10 @@ def level_select():
 
 # game event Loop
 def game(level_key):
+    all_sprites = pygame.sprite.Group()
+    player = Player()
+    all_sprites.add(player)
+
     # i is used to move the screen
     i = 0
     run = True
@@ -322,6 +329,11 @@ def game(level_key):
 
         i -= 10
 
+        # drawing the player
+        pX = 200
+        pY = 200
+
+
         clock.tick(60)
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -330,6 +342,12 @@ def game(level_key):
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     run = False
+
+        # update sprites
+        all_sprites.update()
+
+        # draw sprites
+        all_sprites.draw(WINDOW)
 
         pygame.display.update()
 
