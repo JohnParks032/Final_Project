@@ -23,14 +23,72 @@ techie_run = [pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 
 techie_jump = pygame.image.load(os.path.join("Assets/Techie", "Techie Jump.png"))
 techie_duck = pygame.image.load(os.path.join("Assets/Techie", "Techie Duck.png"))
 
+# Techie Default Parameters
+techie_width = 762
+techie_height= 782
+techie_x_pos = 200
+techie_y_pos = 151
+
 # Class for Techie, playable character
-class Player(pygame.sprite.Sprite):
+class Player:
     def __init__(self, width, height, x_pos, y_pos):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((50, 50))
-        self.image.fill((0, 255, 0))
-        self.rect = self.image.get_rect()
-        self.rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
+        self.width = width
+        self.height = height
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+
+        self.run_png = techie_run
+        self.jump_png = techie_jump
+        self.duck_png = techie_duck
+
+        self.isRun = True
+        self.isJump = False
+        self.isDuck = False
+
+        self.step_index = 0
+        self.image = self.run_png[0]
+        self.player_rect = self.image.get_rect()
+
+    def update(self, user_input):
+        if self.isRun:
+            self.run()
+        if self.isJump:
+            self.jump()
+        if self.isDuck:
+            self.duck()
+
+        if self.step_index >= 10:
+            self.step_index = 0
+        
+        if user_input[pygame.K_UP] and not self.isJump:
+            self.isRun = False
+            self.isJump = True
+            self.isDuck = False
+        elif user_input[pygame.K_DOWN] and not self.isJump:
+            self.isRun = False
+            self.isJump = False
+            self.isDuck = True
+        elif not (self.isJump or user_input[pygame.K_DOWN]):
+            self.isRun = True
+            self.isJump = False
+            self.isDuck = False
+
+    def run(self):
+        self.image = self.run_png[self.step_index // 5]
+        self.player_rect = self.image.get_rect()
+        self.player_rect.x = self.x_pos
+        self.player_rect.y = self.y_pos
+        self.step_index += 1
+    
+    def jump(self):
+        pass
+        
+    def duck(self):
+        pass
+
+    def draw(self, WINDOW):
+        WINDOW.blit(self.image, (self.width, self.height, self.x_pos, self.y_pos))
+
 
 
 # Backgrounds
@@ -291,12 +349,12 @@ def level_select():
         pygame.display.update()
         clock.tick(60)
 
-
+    
 # game event Loop
 def game(level_key):
-    all_sprites = pygame.sprite.Group()
-    player = Player()
-    all_sprites.add(player)
+    
+    # creating the player
+    techie = Player(techie_width, techie_height, techie_x_pos, techie_y_pos)
 
     # i is used to move the screen
     i = 0
@@ -322,17 +380,12 @@ def game(level_key):
         WINDOW.blit(fg, (WINDOW_WIDTH + i, 150))
 
         # moving the bg & fg
-        if i == -WINDOW_WIDTH:
+        if i <= -WINDOW_WIDTH:
             WINDOW.blit(bg, (WINDOW_WIDTH + i, 0))
             WINDOW.blit(fg, (WINDOW_WIDTH + i, 150))
             i = 0
 
-        i -= 10
-
-        # drawing the player
-        pX = 200
-        pY = 200
-
+        i -= 15
 
         clock.tick(60)
         for event in pygame.event.get():
@@ -343,11 +396,11 @@ def game(level_key):
                 if event.key == K_ESCAPE:
                     run = False
 
-        # update sprites
-        all_sprites.update()
+        # grabbing input for Player class
+        user_input = pygame.key.get_pressed()
 
-        # draw sprites
-        all_sprites.draw(WINDOW)
+        techie.draw(WINDOW)
+        techie.update(user_input)
 
         pygame.display.update()
 

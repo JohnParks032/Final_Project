@@ -8,7 +8,7 @@ pygame.init()
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 DIFFICULTY = "easy"
-last_level = 1
+last_level = "iesb"
 
 # Clock ticking for FPS (60fps)
 clock = pygame.time.Clock()
@@ -17,16 +17,78 @@ clock = pygame.time.Clock()
 WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("TechTime Racers") # Window name
 
+# Techie "Animations"
+techie_run = [pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 1.png")), 
+            pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 2.png"))]
+techie_jump = pygame.image.load(os.path.join("Assets/Techie", "Techie Jump.png"))
+techie_duck = pygame.image.load(os.path.join("Assets/Techie", "Techie Duck.png"))
+
+# Techie Default Parameters
+techie_width = 762
+techie_height= 782
+techie_x_pos = 200
+techie_y_pos = 151
 
 # Class for Techie, playable character
-class Player(pygame.sprite.Sprite):
-    run = [pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 1.png")), 
-            pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 2.png"))]
-    jump = pygame.image.load(os.path.join("Assets/Techie", "Techie Jump.png"))
-    duck = pygame.image.load(os.path.join("Assets/Techie", "Techie Duck.png"))
+class Player:
     def __init__(self, width, height, x_pos, y_pos):
-        pygame.sprite.Sprite.__init__(self)
-        self.rect = self.image.get_rect()
+        self.width = width
+        self.height = height
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+
+        self.run_png = techie_run
+        self.jump_png = techie_jump
+        self.duck_png = techie_duck
+
+        self.isRun = True
+        self.isJump = False
+        self.isDuck = False
+
+        self.step_index = 0
+        self.image = self.run_png[0]
+        self.player_rect = self.image.get_rect()
+
+    def update(self, user_input):
+        if self.isRun:
+            self.run()
+        if self.isJump:
+            self.jump()
+        if self.isDuck:
+            self.duck()
+
+        if self.step_index >= 10:
+            self.step_index = 0
+        
+        if user_input[pygame.K_UP] and not self.isJump:
+            self.isRun = False
+            self.isJump = True
+            self.isDuck = False
+        elif user_input[pygame.K_DOWN] and not self.isJump:
+            self.isRun = False
+            self.isJump = False
+            self.isDuck = True
+        elif not (self.isJump or user_input[pygame.K_DOWN]):
+            self.isRun = True
+            self.isJump = False
+            self.isDuck = False
+
+    def run(self):
+        self.image = self.run_png[self.step_index // 5]
+        self.player_rect = self.image.get_rect()
+        self.player_rect.x = self.x_pos
+        self.player_rect.y = self.y_pos
+        self.step_index += 1
+    
+    def jump(self):
+        pass
+        
+    def duck(self):
+        pass
+
+    def draw(self, WINDOW):
+        WINDOW.blit(self.image, (self.width, self.height, self.x_pos, self.y_pos))
+
 
 
 # Backgrounds
@@ -42,11 +104,15 @@ level_select_bg = pygame.transform.scale(level_select_bg_img, (1280, 720))
 settinngs_bg_img = pygame.image.load(os.path.join("Assets/Screens", "settings screen.png"))
 settings_bg = pygame.transform.scale(settinngs_bg_img, (1280, 720))
 
-
 # level dictionary
+# the list contains path for [background, foreground, obstacles, flying obstacles]
 lvls_dict = {
-    "iesb": ["Outside_IESB.png"]
-
+    "iesb": ["Outside_IESB.png", "Road.PNG"],
+    "bogard": ["Bogard.png", "Road.PNG"],
+    "clock": ["Clock_Tower.png", "Brick.PNG"],
+    "lotm": ["Lady_of_Mist.png", "Brick.PNG"],
+    "wyly": ["Wyly.png", "Brick.PNG"],
+    "endless": ["The_Joe.png", "Grass.PNG"]
 }
 
 # main menu
@@ -55,7 +121,6 @@ def main_menu():
     while True:
 
         # creating the background image
-        WINDOW.fill((0, 0, 0))
         WINDOW.blit(main_menu_bg, (0, 0))
 
         # position of the mouse
@@ -115,7 +180,6 @@ def play_screen():
     run = True
     while run:
 
-        WINDOW.fill((0, 0, 0))
         WINDOW.blit(play_screen_bg, (0, 0))
 
         mx, my = pygame.mouse.get_pos()
@@ -166,7 +230,6 @@ def settings():
     run = True
     while run:
 
-        WINDOW.fill((0, 0, 0))
         WINDOW.blit(settings_bg, (0, 0))
 
         mx, my = pygame.mouse.get_pos(292, 354, 269, 98)
@@ -224,7 +287,6 @@ def level_select():
     run = True
     while run:
 
-        WINDOW.fill((0, 0, 0))
         WINDOW.blit(level_select_bg, (0, 0))
 
         mx, my = pygame.mouse.get_pos()
@@ -245,7 +307,7 @@ def level_select():
                 game("iesb")
         if lvl_bogard_button.collidepoint((mx, my)):
             if click:
-                game("boagrd")
+                game("bogard")
         if lvl_clock_button.collidepoint((mx, my)):
             if click:
                 game("clock")
@@ -287,9 +349,15 @@ def level_select():
         pygame.display.update()
         clock.tick(60)
 
-
+    
 # game event Loop
 def game(level_key):
+    
+    # creating the player
+    techie = Player(techie_width, techie_height, techie_x_pos, techie_y_pos)
+
+    # i is used to move the screen
+    i = 0
     run = True
     while run:
         
@@ -298,17 +366,43 @@ def game(level_key):
         bg = pygame.transform.scale(bg_img, (1280, 720))
 
         # foreground
-        fg_img = pygame.image.load(os.path.join("Assets/Foregrounds", lvls_dict[level_key][1]))
-        fg = pygame.transform.scale(fg_img, (1280, 565))
+        fg_img = pygame.image.load(os.path.join("Assets/Foreground", lvls_dict[level_key][1]))
+        fg = pygame.transform.scale(fg_img, (1280, 570))
 
+        # drawing the bg
         WINDOW.fill((0, 0, 0))
-        WINDOW.blit(bg, (0, 0))
+        WINDOW.blit(bg, (i, 0))
+        WINDOW.blit(bg, (WINDOW_WIDTH + i, 0))
+
+        #drawing the fg
+        WINDOW.blit(fg, (0, 150))
+        WINDOW.blit(fg, (i, 150))
+        WINDOW.blit(fg, (WINDOW_WIDTH + i, 150))
+
+        # moving the bg & fg
+        if i <= -WINDOW_WIDTH:
+            WINDOW.blit(bg, (WINDOW_WIDTH + i, 0))
+            WINDOW.blit(fg, (WINDOW_WIDTH + i, 150))
+            i = 0
+
+        i -= 15
 
         clock.tick(60)
         for event in pygame.event.get():
             if event.type == QUIT:
-                run = False
-        pygame.display.flip()
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    run = False
+
+        # grabbing input for Player class
+        user_input = pygame.key.get_pressed()
+
+        techie.draw(WINDOW)
+        techie.update(user_input)
+
+        pygame.display.update()
 
 main_menu()
 
