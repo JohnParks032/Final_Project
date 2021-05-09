@@ -152,7 +152,7 @@ class Sign(Obstacle):
     def __init__(self, image):
         self.type = randint(0, 1)
         super().__init__(image, self.type)
-        self.rect.y = 355
+        self.rect.y = 370
 
 
 class Books(Obstacle):
@@ -200,7 +200,7 @@ class Bird(Obstacle):
     def __init__(self, image):
         self.type = 0
         super().__init__(image, self.type)
-        self.rect.y = 350
+        self.rect.y = 300
         self.index = 0
     
     def draw(self, WINDOW):
@@ -358,28 +358,33 @@ def settings():
         medium_button = pygame.Rect(520, 376, 270, 99)
         hard_button = pygame.Rect(520, 518, 270, 99)
         back_button = pygame.Rect(11, 8, 33, 34)
+        menu_button = pygame.Rect(1186, 7, 85, 32)
 
         # button functions
         if easy_button.collidepoint((mx, my)):
             if click:
                 DIFFICULTY = "easy"
-                i = 30
-                game_speed = 30
+                i = 25
+                game_speed = 25
                 run = False
         if medium_button.collidepoint((mx, my)):
             if click:
                 DIFFICULTY = "medium"
-                i = 60
-                game_speed = 60
+                i = 45
+                game_speed = 45
                 run = False
         if hard_button.collidepoint((mx, my)):
             if click:
                 DIFFICULTY = "hard"
-                i = 90
-                game_speed = 90
+                i = 65
+                game_speed = 65
                 run = False
         if back_button.collidepoint((mx, my)):
             if click:
+                run = False
+        if menu_button.collidepoint((mx, my)):
+            if click:
+                main_menu()
                 run = False
 
         # check for clicks or button push
@@ -400,6 +405,7 @@ def settings():
         # pygame.draw.rect(WINDOW, (255, 0, 0), medium_button)
         # pygame.draw.rect(WINDOW, (255, 0, 0), hard_button)
         # pygame.draw.rect(WINDOW, (0, 255, 0), back_button)
+        # pygame.draw.rect(WINDOW, (0, 255, 0), menu_button)
 
         pygame.display.update()
         clock.tick(60)
@@ -524,7 +530,7 @@ def game(level_key):
             i = 0
         
         # speed at which bg moves
-        i -= 30
+        i -= 25
 
         # fps
         clock.tick(60)
@@ -535,7 +541,7 @@ def game(level_key):
                 sys.exit()
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    run = False
+                    settings()
         
         # increment score
         score()
@@ -575,14 +581,13 @@ def game(level_key):
         for obstacle in obstacles:
             obstacle.draw(WINDOW)
             obstacle.update()
+            # used to show hitboxes
             pygame.draw.rect(WINDOW, (255, 0, 0), techie.player_rect, 2)
             pygame.draw.rect(WINDOW, (255, 0, 0), obstacle.rect, 2)
-            # if techie.player_rect.colliderect(obstacle.rect):
-                # used to show hitbox
-                # pygame.draw.rect(WINDOW, (255, 0, 0), techie.player_rect, 2)
-                # pygame.time.delay(2000)
-                # obstacles.pop()
-                # run = False
+            if techie.player_rect.colliderect(obstacle.rect):
+                pygame.time.delay(2000)
+                obstacles.pop()
+                run = False
 
         pygame.display.update()
 
