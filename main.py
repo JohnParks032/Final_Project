@@ -11,8 +11,8 @@ WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 DIFFICULTY = "easy"
 last_level = "iesb"
-game_speed = 30
-i = 30
+game_speed = 20
+i = 20
 points = 0
 obstacles = []
 
@@ -26,29 +26,29 @@ pygame.display.set_caption("TechTime Racers") # Window name
 
 
 # Techie "Animations"
-techie_run = [pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 1.png")), 
-            pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 2.png"))]
-techie_jump = pygame.image.load(os.path.join("Assets/Techie", "Techie Jump.png"))
-techie_duck = pygame.image.load(os.path.join("Assets/Techie", "Techie Duck.png"))
+techie_run = [pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 1.PNG")).convert_alpha(), 
+            pygame.image.load(os.path.join("Assets/Techie", "Techie Run Frame 2.PNG")).convert_alpha()]
+techie_jump = pygame.image.load(os.path.join("Assets/Techie", "Techie Jump.PNG")).convert_alpha()
+techie_duck = pygame.image.load(os.path.join("Assets/Techie", "Techie Duck.PNG")).convert_alpha()
 
 
 # obstacles
-arduino_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Arduino 1.PNG")),
-            pygame.image.load(os.path.join("Assets/Obstacles", "Arduino 2.PNG"))]
-sign_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Stop Sign.PNG")),
-            pygame.image.load(os.path.join("Assets/Obstacles", "Yield Sign.PNG"))]
-pn_table_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Picnic Table 1.PNG")),
-            pygame.image.load(os.path.join("Assets/Obstacles", "Picnic Table 2.PNG"))]
-squirrel_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Squirrel 1.PNG")),
-            pygame.image.load(os.path.join("Assets/Obstacles", "Squirrel 2.PNG"))]
-bird_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Bird Fly 1.PNG")),
-            pygame.image.load(os.path.join("Assets/Obstacles", "Bird Fly 2.PNG"))]
-books_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Book 1.PNG")),
-            pygame.image.load(os.path.join("Assets/Obstacles", "Book 2.PNG"))]
-football_ground_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Football Ground.PNG")),
-                    pygame.image.load(os.path.join("Assets/Obstacles", "Football Ground.PNG"))]
-football_air_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Football Air.PNG")), 
-                pygame.image.load(os.path.join("Assets/Obstacles", "Football Air.PNG"))]
+arduino_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Arduino 1.PNG")).convert_alpha(),
+            pygame.image.load(os.path.join("Assets/Obstacles", "Arduino 2.PNG")).convert_alpha()]
+sign_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Stop Sign.PNG")).convert_alpha(),
+            pygame.image.load(os.path.join("Assets/Obstacles", "Yield Sign.PNG")).convert_alpha()]
+pn_table_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Picnic Table 1.PNG")).convert_alpha(),
+            pygame.image.load(os.path.join("Assets/Obstacles", "Picnic Table 2.PNG")).convert_alpha()]
+squirrel_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Squirrel 1.PNG")).convert_alpha(),
+            pygame.image.load(os.path.join("Assets/Obstacles", "Squirrel 2.PNG")).convert_alpha()]
+bird_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Bird Fly 1.PNG")).convert_alpha(),
+            pygame.image.load(os.path.join("Assets/Obstacles", "Bird Fly 2.PNG")).convert_alpha()]
+books_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Book 1.PNG")).convert_alpha(),
+            pygame.image.load(os.path.join("Assets/Obstacles", "Book 2.PNG")).convert_alpha()]
+football_ground_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Football Ground.PNG")).convert_alpha(),
+                    pygame.image.load(os.path.join("Assets/Obstacles", "Football Ground.PNG")).convert_alpha()]
+football_air_png = [pygame.image.load(os.path.join("Assets/Obstacles", "Football Air.PNG")).convert_alpha(), 
+                pygame.image.load(os.path.join("Assets/Obstacles", "Football Air.PNG")).convert_alpha()]
 
 
 # Class for Techie, playable character
@@ -74,6 +74,7 @@ class Player:
         self.player_rect.x = self.x_pos
         self.player_rect.y = self.y_pos
 
+    # used to check the status of the player and what is happening
     def update(self, user_input):
         if self.isRun:
             self.run()
@@ -98,6 +99,7 @@ class Player:
             self.isJump = False
             self.isDuck = False
 
+    # running logic
     def run(self):
         self.image = self.run_png[self.step_index // 5]
         self.player_rect = self.image.get_rect()
@@ -105,15 +107,17 @@ class Player:
         self.player_rect.y = self.y_pos
         self.step_index += 1
     
+    # jumping logic
     def jump(self):
         self.image = self.jump_png
         if self.isJump:
-            self.player_rect.y -= self.dynamic_jump_vel * 6
-            self.dynamic_jump_vel -= 0.8
+            self.player_rect.y -= self.dynamic_jump_vel * 8
+            self.dynamic_jump_vel -= 0.65
         if self.dynamic_jump_vel < - self.static_jump_vel:
             self.isJump = False
             self.dynamic_jump_vel = self.static_jump_vel
-        
+    
+    # jumping logic
     def duck(self):
         self.image = self.duck_png
         self.player_rect = self.image.get_rect()
@@ -121,10 +125,12 @@ class Player:
         self.player_rect.y = self.y_pos_duck
         self.step_index += 1
 
+    # drawing Techie on the screen
     def draw(self, WINDOW):
         WINDOW.blit(self.image, (self.player_rect.x, self.player_rect.y))
 
 
+# class for every obstacle to inherit from
 class Obstacle:
     def __init__(self, image, type):
         self.image = image
@@ -152,7 +158,7 @@ class Sign(Obstacle):
     def __init__(self, image):
         self.type = randint(0, 1)
         super().__init__(image, self.type)
-        self.rect.y = 370
+        self.rect.y = 385
 
 
 class Books(Obstacle):
@@ -210,16 +216,16 @@ class Bird(Obstacle):
 
 
 # Backgrounds
-main_menu_bg_img = pygame.image.load(os.path.join("Assets/Screens", "main menu.png"))
+main_menu_bg_img = pygame.image.load(os.path.join("Assets/Screens", "main menu.png")).convert_alpha()
 main_menu_bg = pygame.transform.scale(main_menu_bg_img, (1280, 720))
 
-play_screen_bg_img = pygame.image.load(os.path.join("Assets/Screens", "play screen.png"))
+play_screen_bg_img = pygame.image.load(os.path.join("Assets/Screens", "play screen.png")).convert_alpha()
 play_screen_bg = pygame.transform.scale(play_screen_bg_img, (1280, 720))
 
-level_select_bg_img = pygame.image.load(os.path.join("Assets/Screens", "level select.png"))
+level_select_bg_img = pygame.image.load(os.path.join("Assets/Screens", "level select.png")).convert_alpha()
 level_select_bg = pygame.transform.scale(level_select_bg_img, (1280, 720))
 
-settinngs_bg_img = pygame.image.load(os.path.join("Assets/Screens", "settings screen.png"))
+settinngs_bg_img = pygame.image.load(os.path.join("Assets/Screens", "settings screen.png")).convert_alpha()
 settings_bg = pygame.transform.scale(settinngs_bg_img, (1280, 720))
 
 # level dictionary
@@ -281,8 +287,7 @@ def main_menu():
                 sys.exit()
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
+                    settings()
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
@@ -297,8 +302,10 @@ def play_screen():
     run = True
     while run:
 
+        # draw background
         WINDOW.blit(play_screen_bg, (0, 0))
 
+        # get position of mouse
         mx, my = pygame.mouse.get_pos()
         # print(mx, my)
 
@@ -348,8 +355,10 @@ def settings():
     run = True
     while run:
 
+        # draw background
         WINDOW.blit(settings_bg, (0, 0))
 
+        # get position of mouse
         mx, my = pygame.mouse.get_pos(292, 354, 269, 98)
         # print(mx, my)
 
@@ -364,20 +373,20 @@ def settings():
         if easy_button.collidepoint((mx, my)):
             if click:
                 DIFFICULTY = "easy"
-                i = 25
-                game_speed = 25
+                i = 20
+                game_speed = 20
                 run = False
         if medium_button.collidepoint((mx, my)):
             if click:
                 DIFFICULTY = "medium"
-                i = 45
-                game_speed = 45
+                i = 30
+                game_speed = 30
                 run = False
         if hard_button.collidepoint((mx, my)):
             if click:
                 DIFFICULTY = "hard"
-                i = 65
-                game_speed = 65
+                i = 40
+                game_speed = 40
                 run = False
         if back_button.collidepoint((mx, my)):
             if click:
@@ -417,8 +426,10 @@ def level_select():
     run = True
     while run:
 
+        # draw background
         WINDOW.blit(level_select_bg, (0, 0))
 
+        # get position of mouse
         mx, my = pygame.mouse.get_pos()
         # print(mx, my)
 
@@ -488,7 +499,7 @@ def game(level_key):
     techie = Player()
 
     # i is used to move the screen
-    i = 0
+    i = game_speed
 
     # used to keep score
     points = 0
@@ -506,11 +517,11 @@ def game(level_key):
     while run:
         
         # background
-        bg_img = pygame.image.load(os.path.join("Assets/Backgrounds", lvls_dict[level_key][0]))
+        bg_img = pygame.image.load(os.path.join("Assets/Backgrounds", lvls_dict[level_key][0])).convert_alpha()
         bg = pygame.transform.scale(bg_img, (1280, 720))
 
         # foreground
-        fg_img = pygame.image.load(os.path.join("Assets/Foreground", lvls_dict[level_key][1]))
+        fg_img = pygame.image.load(os.path.join("Assets/Foreground", lvls_dict[level_key][1])).convert_alpha()
         fg = pygame.transform.scale(fg_img, (1280, 570))
 
         # drawing the bg
@@ -535,12 +546,14 @@ def game(level_key):
         # fps
         clock.tick(60)
 
+        # checking for quit or pause game
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
+                    obstacles.pop()
                     settings()
         
         # increment score
@@ -581,9 +594,12 @@ def game(level_key):
         for obstacle in obstacles:
             obstacle.draw(WINDOW)
             obstacle.update()
+
             # used to show hitboxes
             pygame.draw.rect(WINDOW, (255, 0, 0), techie.player_rect, 2)
             pygame.draw.rect(WINDOW, (255, 0, 0), obstacle.rect, 2)
+
+            # checking for collision of hitboxes
             if techie.player_rect.colliderect(obstacle.rect):
                 pygame.time.delay(2000)
                 obstacles.pop()
