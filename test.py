@@ -4,6 +4,7 @@ import os, sys
 from pygame.locals import *     # Further explanation can be found at: https://www.pygame.org/docs/ref/locals.html#module-pygame.locals
 from random import randint
 pygame.init()
+pygame.mixer.init()
 
 
 # Constants
@@ -15,6 +16,8 @@ game_speed = 20
 i = 20
 points = 0
 obstacles = []
+
+music = pygame.mixer.music.load('bkg.ogg')      #thought only ogg files were supported, wasn't the problem
 
 # Clock ticking for FPS (60fps)
 clock = pygame.time.Clock()
