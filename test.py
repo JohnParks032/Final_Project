@@ -513,17 +513,17 @@ def game(level_key):
         WINDOW.blit(point_display, pd_rect)
 
 
-    run = True
+    # background
+    bg_img = pygame.image.load(os.path.join("Assets/Backgrounds", lvls_dict[level_key][0])).convert_alpha()
+    bg = pygame.transform.scale(bg_img, (1280, 720))
+
+    # foreground
+    fg_img = pygame.image.load(os.path.join("Assets/Foreground", lvls_dict[level_key][1])).convert_alpha()
+    fg = pygame.transform.scale(fg_img, (1280, 570))
+
+    run = 1
     while run:
         
-        # background
-        bg_img = pygame.image.load(os.path.join("Assets/Backgrounds", lvls_dict[level_key][0])).convert_alpha()
-        bg = pygame.transform.scale(bg_img, (1280, 720))
-
-        # foreground
-        fg_img = pygame.image.load(os.path.join("Assets/Foreground", lvls_dict[level_key][1])).convert_alpha()
-        fg = pygame.transform.scale(fg_img, (1280, 570))
-
         # drawing the bg
         WINDOW.fill((0, 0, 0))
         WINDOW.blit(bg, (i, 0))
@@ -603,7 +603,7 @@ def game(level_key):
             if techie.player_rect.colliderect(obstacle.rect):
                 pygame.time.delay(2000)
                 obstacles.pop()
-                run = False
+                run = 0
 
         pygame.display.update()
 
