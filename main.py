@@ -530,7 +530,7 @@ def game(level_key):
             i = 0
         
         # speed at which bg moves
-        i -= 25
+        i -= game_speed
 
         # fps
         clock.tick(60)
