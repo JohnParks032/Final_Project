@@ -306,6 +306,7 @@ def play_screen():
     run = True
     while run:
 
+
         # draw background
         WINDOW.blit(play_screen_bg, (0, 0))
 
@@ -599,9 +600,9 @@ def game(level_key):
             obstacle.draw(WINDOW)
             obstacle.update()
 
-            # used to show hitboxes
+            '''# used to show hitboxes
             pygame.draw.rect(WINDOW, (255, 0, 0), techie.player_rect, 2)
-            pygame.draw.rect(WINDOW, (255, 0, 0), obstacle.rect, 2)
+            pygame.draw.rect(WINDOW, (255, 0, 0), obstacle.rect, 2)'''
 
             # checking for collision of hitboxes
             if techie.player_rect.colliderect(obstacle.rect):
