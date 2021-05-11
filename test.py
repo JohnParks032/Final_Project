@@ -4,10 +4,6 @@ from pygame.locals import *     # Further explanation can be found at: https://w
 from random import randint
 pygame.init()
 pygame.mixer.init()
-<<<<<<< HEAD
-=======
-
->>>>>>> 684297087593cef920bc7611e5178912d1bcb20c
 
 
 # Constants
@@ -23,6 +19,9 @@ obstacles = []
 jump_path = os.path.join("Sounds", "jump.wav")
 jump_sound = pygame.mixer.Sound(jump_path)
 
+bkg_path = os.path.join("Sounds", "bkg.mp3")
+pygame.mixer.music.load(bkg_path)
+pygame.mixer.music.play(-1)
   
 
 # Clock ticking for FPS (60fps)
@@ -237,21 +236,6 @@ level_select_bg = pygame.transform.scale(level_select_bg_img, (1280, 720))
 
 settinngs_bg_img = pygame.image.load(os.path.join("Assets/Screens", "settings screen.png")).convert_alpha()
 settings_bg = pygame.transform.scale(settinngs_bg_img, (1280, 720))
-
-# Background Music
-<<<<<<< HEAD
-'''def music():'''
-'''    music_file = "bkg.mp3"'''
-'''    pygame.mixer.init()'''
-'''    pygame.mixer.music.load(music_file)'''
-'''    pygame.mixer.music.play(-1)'''
-=======
-def music():
-    music_file = "bkg.mp3"
-    pygame.mixer.init()
-    pygame.mixer.music.load(music_file)
-   pygame.mixer.music.play(-1)
->>>>>>> 684297087593cef920bc7611e5178912d1bcb20c
 
 
 # level dictionary
