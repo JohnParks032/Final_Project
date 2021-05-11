@@ -17,6 +17,9 @@ game_speed = 20
 i = 20
 points = 0
 obstacles = []
+# Sound constants
+jump_path = os.path.join("Sounds", "jump.wav")
+jump_sound = pygame.mixer.Sound(jump_path)
 
 # Clock ticking for FPS (60fps)
 clock = pygame.time.Clock()
@@ -91,6 +94,7 @@ class Player:
         if user_input[pygame.K_UP] and not self.isJump:
             self.isRun = False
             self.isJump = True
+            pygame.mixer.Sound.play(jump_sound)    # jump sound plays when techie jumps
             self.isDuck = False
         elif user_input[pygame.K_DOWN] and not self.isJump:
             self.isRun = False
