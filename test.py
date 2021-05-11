@@ -4,6 +4,7 @@ import os, sys
 from pygame.locals import *     # Further explanation can be found at: https://www.pygame.org/docs/ref/locals.html#module-pygame.locals
 from random import randint
 pygame.init()
+pygame.mixer.init()
 
 
 # Constants
@@ -15,6 +16,9 @@ game_speed = 20
 i = 20
 points = 0
 obstacles = []
+# Sound constants
+jump_path = os.path.join("Sounds", "jump.wav")
+jump_sound = pygame.mixer.Sound(jump_path)
 
   
 
@@ -91,6 +95,7 @@ class Player:
         if user_input[pygame.K_UP] and not self.isJump:
             self.isRun = False
             self.isJump = True
+            pygame.mixer.Sound.play(jump_sound)
             self.isDuck = False
         elif user_input[pygame.K_DOWN] and not self.isJump:
             self.isRun = False
@@ -231,11 +236,11 @@ settinngs_bg_img = pygame.image.load(os.path.join("Assets/Screens", "settings sc
 settings_bg = pygame.transform.scale(settinngs_bg_img, (1280, 720))
 
 # Background Music
-def music():
-    music_file = "bkg.mp3"
-    pygame.mixer.init()
-    pygame.mixer.music.load(music_file)
-    pygame.mixer.music.play(-1)
+'''def music():'''
+'''    music_file = "bkg.mp3"'''
+'''    pygame.mixer.init()'''
+'''    pygame.mixer.music.load(music_file)'''
+'''    pygame.mixer.music.play(-1)'''
 
 
 # level dictionary
@@ -311,9 +316,6 @@ def play_screen():
     click = False
     run = True
     while run:
-        # play music
-        music()
-
         # draw background
         WINDOW.blit(play_screen_bg, (0, 0))
 
