@@ -4,7 +4,6 @@ import os, sys
 from pygame.locals import *     # Further explanation can be found at: https://www.pygame.org/docs/ref/locals.html#module-pygame.locals
 from random import randint
 pygame.init()
-pygame.mixer.init()
 
 
 # Constants
@@ -17,7 +16,7 @@ i = 20
 points = 0
 obstacles = []
 
-music = pygame.mixer.music.load('bkg.ogg')      #thought only ogg files were supported, wasn't the problem
+  
 
 # Clock ticking for FPS (60fps)
 clock = pygame.time.Clock()
@@ -231,6 +230,14 @@ level_select_bg = pygame.transform.scale(level_select_bg_img, (1280, 720))
 settinngs_bg_img = pygame.image.load(os.path.join("Assets/Screens", "settings screen.png")).convert_alpha()
 settings_bg = pygame.transform.scale(settinngs_bg_img, (1280, 720))
 
+# Background Music
+def music():
+    music_file = "bkg.mp3"
+    pygame.mixer.init()
+    pygame.mixer.music.load(music_file)
+    pygame.mixer.music.play(-1)
+
+
 # level dictionary
 # the list contains path for [background, foreground, obstacles]
 lvls_dict = {
@@ -304,6 +311,8 @@ def play_screen():
     click = False
     run = True
     while run:
+        # play music
+        music()
 
         # draw background
         WINDOW.blit(play_screen_bg, (0, 0))

@@ -302,6 +302,7 @@ def play_screen():
     run = True
     while run:
 
+
         # draw background
         WINDOW.blit(play_screen_bg, (0, 0))
 
