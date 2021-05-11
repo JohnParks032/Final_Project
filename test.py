@@ -236,7 +236,7 @@ def music():
     music_file = "bkg.mp3"
     pygame.mixer.init()
     pygame.mixer.music.load(music_file)
-    pygame.mixer.music.play(-1)
+   pygame.mixer.music.play(-1)
 
 
 # level dictionary
@@ -249,27 +249,6 @@ lvls_dict = {
     "wyly": ["Wyly.png", "Brick.PNG", books_png],
     "endless": ["The_Joe.png", "Grass.PNG", football_ground_png]}
 
-# timer
-screen = pygame.display.set_mode((128, 128))
-clock = pygame.time.Clock()
-
-counter, text = 120, '120'.rjust(3)
-pygame.time.set_timer(pygame.USEREVENT, 1000)
-font = pygame.font.SysFont('Consolas', 30)
-
-run = True
-while run:
-    for e in pygame.event.get():
-        if e.type == pygame.USEREVENT: 
-            counter -= 1
-            text = str(counter).rjust(3) if counter > 0 else 'Congrats, you completed the level!'
-        if e.type == pygame.QUIT: 
-            run = False
-
-    screen.fill((255, 255, 255))
-    screen.blit(font.render(text, True, (0, 0, 0)), (32, 48))
-    pygame.display.flip()
-    clock.tick(60)
 
 # Sound
 
@@ -530,7 +509,24 @@ def level_select():
     
 # game event Loop
 def game(level_key):
-    global points, obstacles, i, game_speed
+    timer = pygame.time.Clock()
+
+    counter, text = 120, '120'.rjust(3)
+    pygame.time.set_timer(pygame.USEREVENT, 1000)
+    font = pygame.font.SysFont('Consolas', 30)
+
+    run = True
+    while run:
+        for e in pygame.event.get():
+            if e.type == pygame.USEREVENT: 
+                counter -= 1
+                text = str(counter).rjust(3) if counter > 0 else 'Congrats, you completed the level!'
+            if e.type == pygame.QUIT: 
+                run = False
+
+        pygame.display.flip()
+        timer.tick(60)
+        global points, obstacles, i, game_speed
     
     # creating the player
     techie = Player()
