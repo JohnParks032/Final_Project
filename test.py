@@ -1,10 +1,13 @@
-
 import pygame
 import os, sys
 from pygame.locals import *     # Further explanation can be found at: https://www.pygame.org/docs/ref/locals.html#module-pygame.locals
 from random import randint
 pygame.init()
 pygame.mixer.init()
+<<<<<<< HEAD
+=======
+
+>>>>>>> 684297087593cef920bc7611e5178912d1bcb20c
 
 
 # Constants
@@ -236,11 +239,19 @@ settinngs_bg_img = pygame.image.load(os.path.join("Assets/Screens", "settings sc
 settings_bg = pygame.transform.scale(settinngs_bg_img, (1280, 720))
 
 # Background Music
+<<<<<<< HEAD
 '''def music():'''
 '''    music_file = "bkg.mp3"'''
 '''    pygame.mixer.init()'''
 '''    pygame.mixer.music.load(music_file)'''
 '''    pygame.mixer.music.play(-1)'''
+=======
+def music():
+    music_file = "bkg.mp3"
+    pygame.mixer.init()
+    pygame.mixer.music.load(music_file)
+   pygame.mixer.music.play(-1)
+>>>>>>> 684297087593cef920bc7611e5178912d1bcb20c
 
 
 # level dictionary
@@ -252,6 +263,9 @@ lvls_dict = {
     "lotm": ["Lady_of_Mist.png", "Brick.PNG", squirrel_png],
     "wyly": ["Wyly.png", "Brick.PNG", books_png],
     "endless": ["The_Joe.png", "Grass.PNG", football_ground_png]}
+
+
+# Sound
 
 # main menu
 def main_menu():
@@ -507,7 +521,24 @@ def level_select():
     
 # game event Loop
 def game(level_key):
-    global points, obstacles, i, game_speed
+    timer = pygame.time.Clock()
+
+    counter, text = 120, '120'.rjust(3)
+    pygame.time.set_timer(pygame.USEREVENT, 1000)
+    font = pygame.font.SysFont('Consolas', 30)
+
+    run = True
+    while run:
+        for e in pygame.event.get():
+            if e.type == pygame.USEREVENT: 
+                counter -= 1
+                text = str(counter).rjust(3) if counter > 0 else 'Congrats, you completed the level!'
+            if e.type == pygame.QUIT: 
+                run = False
+
+        pygame.display.flip()
+        timer.tick(60)
+        global points, obstacles, i, game_speed
     
     # creating the player
     techie = Player()

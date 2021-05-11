@@ -4,6 +4,8 @@ import os, sys
 from pygame.locals import *     # Further explanation can be found at: https://www.pygame.org/docs/ref/locals.html#module-pygame.locals
 from random import randint
 pygame.init()
+pygame.mixer.init()
+
 
 
 # Constants
@@ -237,6 +239,8 @@ lvls_dict = {
     "lotm": ["Lady_of_Mist.png", "Brick.PNG", squirrel_png],
     "wyly": ["Wyly.png", "Brick.PNG", books_png],
     "endless": ["The_Joe.png", "Grass.PNG", football_ground_png]}
+
+# Sound
 
 # main menu
 def main_menu():
