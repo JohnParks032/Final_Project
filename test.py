@@ -1,9 +1,10 @@
-
 import pygame
 import os, sys
 from pygame.locals import *     # Further explanation can be found at: https://www.pygame.org/docs/ref/locals.html#module-pygame.locals
 from random import randint
 pygame.init()
+pygame.mixer.init()
+
 
 
 # Constants
@@ -237,6 +238,30 @@ lvls_dict = {
     "lotm": ["Lady_of_Mist.png", "Brick.PNG", squirrel_png],
     "wyly": ["Wyly.png", "Brick.PNG", books_png],
     "endless": ["The_Joe.png", "Grass.PNG", football_ground_png]}
+
+# timer
+screen = pygame.display.set_mode((128, 128))
+clock = pygame.time.Clock()
+
+counter, text = 120, '120'.rjust(3)
+pygame.time.set_timer(pygame.USEREVENT, 1000)
+font = pygame.font.SysFont('Consolas', 30)
+
+run = True
+while run:
+    for e in pygame.event.get():
+        if e.type == pygame.USEREVENT: 
+            counter -= 1
+            text = str(counter).rjust(3) if counter > 0 else 'Congrats, you completed the level!'
+        if e.type == pygame.QUIT: 
+            run = False
+
+    screen.fill((255, 255, 255))
+    screen.blit(font.render(text, True, (0, 0, 0)), (32, 48))
+    pygame.display.flip()
+    clock.tick(60)
+
+# Sound
 
 # main menu
 def main_menu():
