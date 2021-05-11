@@ -6,7 +6,6 @@ pygame.init()
 pygame.mixer.init()
 
 
-
 # Constants
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -16,7 +15,13 @@ game_speed = 20
 i = 20
 points = 0
 obstacles = []
+# Sound constants
+jump_path = os.path.join("Sounds", "jump.wav")
+jump_sound = pygame.mixer.Sound(jump_path)
 
+bkg_path = os.path.join("Sounds", "bkg.mp3")
+pygame.mixer.music.load(bkg_path)
+pygame.mixer.music.play(-1)
   
 
 # Clock ticking for FPS (60fps)
@@ -92,6 +97,7 @@ class Player:
         if user_input[pygame.K_UP] and not self.isJump:
             self.isRun = False
             self.isJump = True
+            pygame.mixer.Sound.play(jump_sound)
             self.isDuck = False
         elif user_input[pygame.K_DOWN] and not self.isJump:
             self.isRun = False
@@ -231,6 +237,7 @@ level_select_bg = pygame.transform.scale(level_select_bg_img, (1280, 720))
 settinngs_bg_img = pygame.image.load(os.path.join("Assets/Screens", "settings screen.png")).convert_alpha()
 settings_bg = pygame.transform.scale(settinngs_bg_img, (1280, 720))
 
+<<<<<<< HEAD
 # Background Music
 #def music():
   #  music_file = "bkg.mp3"
@@ -238,6 +245,8 @@ settings_bg = pygame.transform.scale(settinngs_bg_img, (1280, 720))
    # pygame.mixer.music.load(music_file)
    #pygame.mixer.music.play(-1)
 
+=======
+>>>>>>> 56922f87b2ac2c99aa56e35b0f7fd008f57f01d2
 
 # level dictionary
 # the list contains path for [background, foreground, obstacles]
@@ -315,9 +324,12 @@ def play_screen():
     click = False
     run = True
     while run:
+<<<<<<< HEAD
         # play music
        # music()
 
+=======
+>>>>>>> 56922f87b2ac2c99aa56e35b0f7fd008f57f01d2
         # draw background
         WINDOW.blit(play_screen_bg, (0, 0))
 
