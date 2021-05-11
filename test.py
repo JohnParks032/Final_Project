@@ -232,11 +232,11 @@ settinngs_bg_img = pygame.image.load(os.path.join("Assets/Screens", "settings sc
 settings_bg = pygame.transform.scale(settinngs_bg_img, (1280, 720))
 
 # Background Music
-def music():
-    music_file = "bkg.mp3"
-    pygame.mixer.init()
-    pygame.mixer.music.load(music_file)
-   pygame.mixer.music.play(-1)
+#def music():
+  #  music_file = "bkg.mp3"
+   # pygame.mixer.init()
+   # pygame.mixer.music.load(music_file)
+   #pygame.mixer.music.play(-1)
 
 
 # level dictionary
@@ -316,7 +316,7 @@ def play_screen():
     run = True
     while run:
         # play music
-        music()
+       # music()
 
         # draw background
         WINDOW.blit(play_screen_bg, (0, 0))
@@ -509,24 +509,7 @@ def level_select():
     
 # game event Loop
 def game(level_key):
-    timer = pygame.time.Clock()
-
-    counter, text = 120, '120'.rjust(3)
-    pygame.time.set_timer(pygame.USEREVENT, 1000)
-    font = pygame.font.SysFont('Consolas', 30)
-
-    run = True
-    while run:
-        for e in pygame.event.get():
-            if e.type == pygame.USEREVENT: 
-                counter -= 1
-                text = str(counter).rjust(3) if counter > 0 else 'Congrats, you completed the level!'
-            if e.type == pygame.QUIT: 
-                run = False
-
-        pygame.display.flip()
-        timer.tick(60)
-        global points, obstacles, i, game_speed
+    global points, obstacles, i, game_speed
     
     # creating the player
     techie = Player()
@@ -556,7 +539,26 @@ def game(level_key):
 
     run = 1
     while run:
-        
+        timer = pygame.time.Clock()
+
+        counter, text = 120, '120'.rjust(3)
+        pygame.time.set_timer(pygame.USEREVENT, 1000)
+        font = pygame.font.SysFont('Consolas', 30)
+
+        run = True
+        font = pygame.font.Font("freesansbold.ttf", 20)
+        while run:
+            for e in pygame.event.get():
+                if e.type == pygame.USEREVENT:
+                    counter -= 1
+                    text = str(counter).rjust(3) if counter > 0 else 'Congrats, you completed the level!'
+                if e.type == pygame.QUIT:
+                    run = False
+            point_display = font.render(f"Time: {timer}", True, (0, 0, 0))
+            pd_rect = point_display.get_rect()
+            pd_rect.center = (1000, 30)
+            WINDOW.blit(point_display, pd_rect)
+
         # drawing the bg
         WINDOW.fill((0, 0, 0))
         WINDOW.blit(bg, (i, 0))
